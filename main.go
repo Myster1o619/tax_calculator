@@ -9,9 +9,9 @@ func main() {
 	result := make(map[float64][]float64)
 
 	for _, tax := range taxRates {
-		var adjustedPrices []float64
+		adjustedPrices := []float64{}
 		for _, price := range prices {
-			adjusted := price - (price * tax)
+			adjusted := price * (1 + tax)
 			adjustedPrices = append(adjustedPrices, adjusted)
 		}
 		result[tax] = adjustedPrices
