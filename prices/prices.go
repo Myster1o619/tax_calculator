@@ -2,10 +2,11 @@ package prices
 
 import (
 	"fmt"
-	"strconv"
 	"math"
-	"os"
-	"bufio"
+	"strconv"
+
+	"example.com/tax_calculator/conversion"
+	"example.com/tax_calculator/filemanager"
 )
 
 type TaxIncludedPrice struct {
@@ -14,30 +15,26 @@ type TaxIncludedPrice struct {
 	TaxIncludedPrices map[string][]float64
 }
 
-func (taxIncludedPrice *TaxIncludedPrice) getPricesFromFile() {
-	file, _ := os.Open("prices.txt")
-	defer file.Close()
-	pricesList := []float64{}
+func (taxIncludedPrice *TaxIncludedPrice) getPricesFromFile(fileName string) {
+	fileContents, err := filemanager.ReadLines(fileName)
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		fmt.Println(line)
-		convertedLine, _ := strconv.ParseFloat(line, 64)
-		pricesList = append(pricesList, convertedLine)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 
-	if err := scanner.Err(); err != nil {
-		fmt.Println("Error reading file:", err)
-		return 
-	}
+	convertedFileContent, conversionErr := conversion.StringToFloat(fileContents)
 
-	taxIncludedPrice.InputPrices = pricesList
+	if conversionErr != nil {
+		fmt.Println(conversionErr)
+	}
+	
+	taxIncludedPrice.InputPrices = convertedFileContent
 }
 
 func (taxIncludedPrice *TaxIncludedPrice) Process() {
 
-	taxIncludedPrice.getPricesFromFile()
+	taxIncludedPrice.getPricesFromFile("prices.txt")
 
 	result := make(map[string][]float64)
 	stringKey := strconv.FormatFloat(taxIncludedPrice.TaxRate, 'g', 2, 64)
