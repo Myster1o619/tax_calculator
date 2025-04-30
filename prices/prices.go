@@ -14,7 +14,7 @@ type TaxIncludedPrice struct {
 func (taxIncludedPrice *TaxIncludedPrice) Process() {
 	result := make(map[string][]float64)
 	stringKey := strconv.FormatFloat(taxIncludedPrice.TaxRate, 'g', 2, 64)
-	var adjustedPrices []float64 = []float64{}
+	adjustedPrices := []float64{}
 
 	for _, price := range taxIncludedPrice.InputPrices {
 		adjusted := price * (1 + taxIncludedPrice.TaxRate)
