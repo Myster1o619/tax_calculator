@@ -10,13 +10,14 @@ import (
 )
 
 type TaxIncludedPrice struct {
+	IOManager *filemanager.FileManager
 	TaxRate float64
 	InputPrices []float64
 	TaxIncludedPrices map[string][]float64
 }
 
-func (taxIncludedPrice *TaxIncludedPrice) getPricesFromFile(fileName string) {
-	fileContents, err := filemanager.ReadLines(fileName)
+func (taxIncludedPrice *TaxIncludedPrice) getPricesFromFile() {
+	fileContents, err := taxIncludedPrice.IOManager.ReadLines()
 
 	if err != nil {
 		fmt.Println(err)
@@ -34,7 +35,7 @@ func (taxIncludedPrice *TaxIncludedPrice) getPricesFromFile(fileName string) {
 
 func (taxIncludedPrice *TaxIncludedPrice) Process() {
 
-	taxIncludedPrice.getPricesFromFile("prices.txt")
+	taxIncludedPrice.getPricesFromFile()
 
 	result := make(map[string][]float64)
 	stringKey := strconv.FormatFloat(taxIncludedPrice.TaxRate, 'g', 2, 64)
@@ -50,11 +51,11 @@ func (taxIncludedPrice *TaxIncludedPrice) Process() {
 	fmt.Println("RESULT:", result)
 	taxIncludedPrice.TaxIncludedPrices = result
 
-	testFileName := fmt.Sprintf("result_%.0f.json", taxIncludedPrice.TaxRate * 100)
-	fmt.Println("testFileName", testFileName)
-	fmt.Println("taxIncludedPrice.TaxRate", taxIncludedPrice.TaxRate)
+	// testFileName := fmt.Sprintf("result_%.0f.json", taxIncludedPrice.TaxRate * 100)
+	// fmt.Println("testFileName", testFileName)
+	// fmt.Println("taxIncludedPrice.TaxRate", taxIncludedPrice.TaxRate)
 
-	err := filemanager.WriteJSON(testFileName, taxIncludedPrice)
+	err := taxIncludedPrice.IOManager.WriteResult(taxIncludedPrice)
 
 	if err != nil {
 		errMsg := fmt.Sprintf("Unable to write contents to JSON file - %v", err)
@@ -63,8 +64,9 @@ func (taxIncludedPrice *TaxIncludedPrice) Process() {
 	}
 }
 
-func NewTaxIncludedPrice(taxRate float64) *TaxIncludedPrice {
+func NewTaxIncludedPrice(fm *filemanager.FileManager, taxRate float64) *TaxIncludedPrice {
 	return &TaxIncludedPrice{
+		IOManager: fm,
 		TaxRate: taxRate,
 	}
 }
