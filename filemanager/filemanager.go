@@ -13,11 +13,11 @@ type FileManager struct {
 	OutputFilePath string
 }
 
-func ReadLines(fileName string) ([]string, error) {
-	file, err := os.Open(fileName)
+func (fm *FileManager)ReadLines() ([]string, error) {
+	file, err := os.Open(fm.InputFilePath)
 	
 	if err != nil {
-		errorString := fmt.Sprintf("Unable to open file: %v\n", fileName)
+		errorString := fmt.Sprintf("Unable to open file: %v\n", fm.InputFilePath)
 		err = errors.New(errorString)
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func ReadLines(fileName string) ([]string, error) {
 	}
 
 	if err = scanner.Err(); err != nil {
-		errorString := fmt.Sprintf("Error reading contents from file: %v - %v\n", fileName, err)
+		errorString := fmt.Sprintf("Error reading contents from file: %v - %v\n", fm.InputFilePath, err)
 		err = errors.New(errorString)
 		return nil, err
 	}
@@ -40,11 +40,11 @@ func ReadLines(fileName string) ([]string, error) {
 	return fileContents, nil
 }
 
-func WriteJSON(path string, data interface{}) (error) {
-	file, err := os.Create(path)
+func (fm *FileManager)WriteJSON(data interface{}) (error) {
+	file, err := os.Create(fm.OutputFilePath)
 
 	if err != nil {
-		errorString := fmt.Sprintf("Error creating JSON file %v - %v", path, err)
+		errorString := fmt.Sprintf("Error creating JSON file %v - %v", fm.OutputFilePath, err)
 		err = errors.New(errorString)
 		return err
 	}
@@ -71,7 +71,7 @@ func WriteJSON(path string, data interface{}) (error) {
 	err = encoder.Encode(data)
 
 	if err != nil {
-		errorString := fmt.Sprintf("Error writing JSON encoding to file %v - %v", path, err)
+		errorString := fmt.Sprintf("Error writing JSON encoding to file %v - %v", fm.OutputFilePath, err)
 		err = errors.New(errorString)
 		return err
 	}
