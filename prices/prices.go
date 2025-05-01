@@ -49,6 +49,18 @@ func (taxIncludedPrice *TaxIncludedPrice) Process() {
 	result[stringKey] = adjustedPrices
 	fmt.Println("RESULT:", result)
 	taxIncludedPrice.TaxIncludedPrices = result
+
+	testFileName := fmt.Sprintf("result_%.0f.json", taxIncludedPrice.TaxRate * 100)
+	fmt.Println("testFileName", testFileName)
+	fmt.Println("taxIncludedPrice.TaxRate", taxIncludedPrice.TaxRate)
+
+	err := filemanager.WriteJSON(testFileName, taxIncludedPrice)
+
+	if err != nil {
+		errMsg := fmt.Sprintf("Unable to write contents to JSON file - %v", err)
+		fmt.Println(errMsg)
+		return
+	}
 }
 
 func NewTaxIncludedPrice(taxRate float64) *TaxIncludedPrice {
