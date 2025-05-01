@@ -8,6 +8,11 @@ import (
 	"encoding/json"
 )
 
+type FileManager struct {
+	InputFilePath string
+	OutputFilePath string
+}
+
 func ReadLines(fileName string) ([]string, error) {
 	file, err := os.Open(fileName)
 	
