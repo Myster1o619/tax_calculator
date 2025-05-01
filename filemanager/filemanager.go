@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"encoding/json"
 )
 
 func ReadLines(fileName string) ([]string, error) {
@@ -32,4 +33,43 @@ func ReadLines(fileName string) ([]string, error) {
 	}
 
 	return fileContents, nil
+}
+
+func WriteJSON(path string, data interface{}) (error) {
+	file, err := os.Create(path)
+
+	if err != nil {
+		errorString := fmt.Sprintf("Error creating JSON file %v - %v", path, err)
+		err = errors.New(errorString)
+		return err
+	}
+
+	defer file.Close()
+
+	// jsonData, err := json.Marshal(data)
+
+	// if err != nil {
+	// 	errorString := fmt.Sprintf("Error creating JSON data at %v - %v", path, err)
+	// 	err = errors.New(errorString)
+	// 	return err
+	// }
+
+	// _, err = file.Write(jsonData)
+
+	// if err != nil {
+	// 	errorString := fmt.Sprintf("Error writing contents to file %v - %v", path, err)
+	// 	err = errors.New(errorString)
+	// 	return err
+	// }
+
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(data)
+
+	if err != nil {
+		errorString := fmt.Sprintf("Error writing JSON encoding to file %v - %v", path, err)
+		err = errors.New(errorString)
+		return err
+	}
+
+	return nil
 }
