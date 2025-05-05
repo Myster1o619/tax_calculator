@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+	"errors"
 
 	"example.com/tax_calculator/conversion"
 	"example.com/tax_calculator/iomanager"
@@ -16,26 +17,32 @@ type TaxIncludedPrice struct {
 	TaxIncludedPrices map[string][]float64 `json:"tax_included_prices"`
 }
 
-func (taxIncludedPrice *TaxIncludedPrice) getPricesFromFile() {
+func (taxIncludedPrice *TaxIncludedPrice) getPricesFromFile() error {
 	fileContents, err := taxIncludedPrice.IOManager.ReadLines()
 
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	convertedFileContent, conversionErr := conversion.StringToFloat(fileContents)
 
 	if conversionErr != nil {
-		fmt.Println(conversionErr)
+		return conversionErr
 	}
 	
 	taxIncludedPrice.InputPrices = convertedFileContent
+	return nil
 }
 
-func (taxIncludedPrice *TaxIncludedPrice) Process() {
+func (taxIncludedPrice *TaxIncludedPrice) Process() error {
 
-	taxIncludedPrice.getPricesFromFile()
+	err := taxIncludedPrice.getPricesFromFile()
+
+	if err != nil {
+		errorString := fmt.Sprintf("Unable to retrieve data - %v", err)
+		err = errors.New(errorString)
+		return err
+	}
 
 	result := make(map[string][]float64)
 	stringKey := strconv.FormatFloat(taxIncludedPrice.TaxRate, 'g', 2, 64)
@@ -55,13 +62,7 @@ func (taxIncludedPrice *TaxIncludedPrice) Process() {
 	// fmt.Println("testFileName", testFileName)
 	// fmt.Println("taxIncludedPrice.TaxRate", taxIncludedPrice.TaxRate)
 
-	err := taxIncludedPrice.IOManager.WriteResult(taxIncludedPrice)
-
-	if err != nil {
-		errMsg := fmt.Sprintf("Unable to write contents to JSON file - %v", err)
-		fmt.Println(errMsg)
-		return
-	}
+	return taxIncludedPrice.IOManager.WriteResult(taxIncludedPrice)
 }
 
 func NewTaxIncludedPrice(manager iomanager.IOManager, taxRate float64) *TaxIncludedPrice {
