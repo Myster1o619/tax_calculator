@@ -7,10 +7,11 @@ import (
 
 	"example.com/tax_calculator/conversion"
 	"example.com/tax_calculator/filemanager"
+	"example.com/tax_calculator/iomanager"
 )
 
 type TaxIncludedPrice struct {
-	IOManager *filemanager.FileManager `json:"-"` //will be ignored in .json output file
+	IOManager iomanager.IOManager `json:"-"` //will be ignored in .json output file
 	TaxRate float64 `json:"tax_rate"`
 	InputPrices []float64 `json:"input_prices"`
 	TaxIncludedPrices map[string][]float64 `json:"tax_included_prices"`
