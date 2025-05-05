@@ -1,10 +1,11 @@
 package main
 
 import (
-
-	"example.com/tax_calculator/prices"
-	"example.com/tax_calculator/filemanager"
 	"fmt"
+
+	// "example.com/tax_calculator/cmdmanager"
+	"example.com/tax_calculator/filemanager"
+	"example.com/tax_calculator/prices"
 )
 
 func main() {
@@ -12,6 +13,7 @@ func main() {
 
 	for _, rate := range taxRates {
 		fileManager := filemanager.New("prices.txt", fmt.Sprintf("result_%.0f.json", rate * 100))
+		// cmdManager := cmdmanager.New()
 		taxIncludedPriceJob := prices.NewTaxIncludedPrice(fileManager, rate)
 		taxIncludedPriceJob.Process()
 	}
