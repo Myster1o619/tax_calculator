@@ -11,10 +11,6 @@ func main() {
 	taxRates := []float64{0.0, 0.07, 0.10, 0.15}
 
 	for _, rate := range taxRates {
-		// fileManager := filemanager.FileManager{
-		// 	InputFilePath: "prices.txt",
-		// 	OutputFilePath: fmt.Sprintf("result_%.0f.json", rate * 100),
-		// }
 		fileManager := filemanager.New("prices.txt", fmt.Sprintf("result_%.0f.json", rate * 100))
 		taxIncludedPriceJob := prices.NewTaxIncludedPrice(fileManager, rate)
 		taxIncludedPriceJob.Process()
