@@ -10,10 +10,10 @@ import (
 )
 
 type TaxIncludedPrice struct {
-	IOManager *filemanager.FileManager
-	TaxRate float64
-	InputPrices []float64
-	TaxIncludedPrices map[string][]float64
+	IOManager *filemanager.FileManager `json:"-"` //will be ignored in .json output file
+	TaxRate float64 `json:"tax_rate"`
+	InputPrices []float64 `json:"input_prices"`
+	TaxIncludedPrices map[string][]float64 `json:"tax_included_prices"`
 }
 
 func (taxIncludedPrice *TaxIncludedPrice) getPricesFromFile() {
