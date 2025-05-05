@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"example.com/tax_calculator/conversion"
-	"example.com/tax_calculator/filemanager"
 	"example.com/tax_calculator/iomanager"
 )
 
@@ -65,9 +64,9 @@ func (taxIncludedPrice *TaxIncludedPrice) Process() {
 	}
 }
 
-func NewTaxIncludedPrice(fm *filemanager.FileManager, taxRate float64) *TaxIncludedPrice {
+func NewTaxIncludedPrice(manager iomanager.IOManager, taxRate float64) *TaxIncludedPrice {
 	return &TaxIncludedPrice{
-		IOManager: fm,
+		IOManager: manager,
 		TaxRate: taxRate,
 	}
 }
